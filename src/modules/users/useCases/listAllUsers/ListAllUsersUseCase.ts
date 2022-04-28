@@ -1,3 +1,4 @@
+import AppError from "../../../../error/AppError";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -12,11 +13,14 @@ class ListAllUsersUseCase {
     const userIdExists = this.usersRepository.findById(user_id);
 
     if (!userIdExists) {
-      throw new Error("User not found");
+      throw new AppError("User not found", 404);
     }
 
     if (userIdExists.admin === false) {
-      throw new Error("User isn't an admin");
+      throw new AppError(
+        "You need to be an administrator to list all users.",
+        400
+      );
     }
 
     const users = this.usersRepository.list();
